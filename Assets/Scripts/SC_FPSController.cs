@@ -25,6 +25,7 @@ public class SC_FPSController : MonoBehaviour
     public AudioClip walkingSound; // Walking sound effect
     public AudioClip runningSound; // Running sound effect
     private bool isPlayingWalkingSound = false; // Tracks which sound is currently playing
+    private bool wasGrounded = true; // Tracks if the player was grounded in the previous frame
 
     void Start()
     {
@@ -49,13 +50,40 @@ public class SC_FPSController : MonoBehaviour
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
         float curSpeedX = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Vertical") : 0;
         float curSpeedY = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Horizontal") : 0;
+        float movementDirectionY = moveDirection.y; // Preserve vertical movement
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+
+        if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
+        {
+            moveDirection.y = jumpSpeed; // Jump when on the ground
+        }
+        else
+        {
+            moveDirection.y = movementDirectionY; // Retain current vertical velocity
+        }
+
+        // Apply gravity
+        if (!characterController.isGrounded)
+        {
+            moveDirection.y -= gravity * Time.deltaTime;
+        }
 
         // Move the controller
         characterController.Move(moveDirection * Time.deltaTime);
 
+        // Check if the player just landed
+        if (characterController.isGrounded && !wasGrounded)
+        {
+            wasGrounded = true;
+            RestartSound(isRunning); // Restart sound if the player lands while moving
+        }
+        else if (!characterController.isGrounded)
+        {
+            wasGrounded = false;
+        }
+
         // Play appropriate sound based on movement and running state
-        if (canMove && moveDirection.magnitude > 0)
+        if (canMove && characterController.isGrounded && (moveDirection.x != 0 || moveDirection.z != 0))
         {
             if (isRunning && audioSource.clip != runningSound)
             {
@@ -70,7 +98,7 @@ public class SC_FPSController : MonoBehaviour
                 isPlayingWalkingSound = true;
             }
         }
-        else
+        else if (characterController.isGrounded)
         {
             if (audioSource.isPlaying)
             {
@@ -85,6 +113,16 @@ public class SC_FPSController : MonoBehaviour
             rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
+        }
+    }
+
+    // Helper function to restart the appropriate sound after landing
+    private void RestartSound(bool isRunning)
+    {
+        if (moveDirection.x != 0 || moveDirection.z != 0)
+        {
+            audioSource.clip = isRunning ? runningSound : walkingSound;
+            audioSource.Play();
         }
     }
 }
