@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/HorrorPuzzleGame.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/MainMenuScene.unity
+    guid: e240cd18778e82b47a68acde2d028d06
   m_configObjects: {}
