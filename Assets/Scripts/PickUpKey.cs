@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class PickUpKey : MonoBehaviour
 {
-    public GameObject inttext, key_table;
+    public GameObject inttext, key_table, scaryObject;
     public AudioSource pickup;
-    public bool interactable;
+    public bool interactable, scaryEvent;
 
     void OnTriggerStay(Collider other)
     {
@@ -33,6 +33,10 @@ public class PickUpKey : MonoBehaviour
                 inttext.SetActive(false);
                 interactable = false;
                 //pickup.Play();
+                if(scaryEvent == true)
+                {
+                    scaryObject.SetActive(true);
+                }
                 key_table.SetActive(false);
             }
         }

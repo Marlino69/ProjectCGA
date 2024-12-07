@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    public GameObject loadingScreen;
+    public GameObject loadingScreen, menuObj, settingObj;
     public string sceneName;
 
 
@@ -26,10 +26,22 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
+    public void SettingsMenu()
+    {
+        menuObj.SetActive(false);
+        settingObj.SetActive(true); 
+    }
+
     public void quitGame()
     {
         Debug.Log("Quit Game");
         Application.Quit();
+    }
+
+    public void backToMenu()
+    {
+        settingObj.SetActive(false);
+        menuObj.SetActive(true);
     }
 
 }
