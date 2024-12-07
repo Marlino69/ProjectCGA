@@ -44,7 +44,7 @@ public class LightSwitchInteraction: MonoBehaviour
             lightObject.SetActive(false);
             lightBulb.material = offlight;
         }
-        if (toggle == true)
+        if(toggle == true)
         {
             lightObject.SetActive(true);
             lightBulb.material = onlight;

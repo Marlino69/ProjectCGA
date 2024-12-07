@@ -4,9 +4,18 @@ using UnityEngine;
 
 public class DoorLogic : MonoBehaviour
 {
-    public GameObject intText;
-    public bool interactable, toggle;
+    public GameObject intText, lockedText;
+    public bool interactable, toggle, requireKey = true;
     public Animator doorAnim;
+    isLocked keyStatus;
+
+    void Start(){
+        keyStatus = GetComponent<isLocked>();
+        if(keyStatus == null)
+        {
+            requireKey = false;
+        }
+    }
 
     void OnTriggerStay(Collider other)
     {
@@ -28,22 +37,51 @@ public class DoorLogic : MonoBehaviour
     {
         if(interactable == true)
         {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                toggle = !toggle;
-                if(toggle == true)
+           
+                if (Input.GetKeyDown(KeyCode.E))
                 {
-                    doorAnim.ResetTrigger("Close");
-                    doorAnim.SetTrigger("Open");
+                    if(requireKey == false)
+                    {
+                        doorOpenClose();
+                    }
+                    if(requireKey == true)
+                    {
+                        if(keyStatus.locked == false)
+                        {
+                            doorOpenClose();
+                        }
+                        if(keyStatus.locked == true)
+                        {
+                            lockedText.SetActive(true);
+                            StopCoroutine("isLockedText");
+                            StartCoroutine("isLockedText");
+                        }
+                    }
+                    
                 }
-                if (toggle == false)
-                {
-                    doorAnim.ResetTrigger("Open");
-                    doorAnim.SetTrigger("Close");
-                }
-                intText.SetActive(false);
-                interactable = false;
-            }
+            
+            
+            
         }
+    }
+
+    void doorOpenClose(){
+        toggle = !toggle;
+        if(toggle == true)
+        {
+            doorAnim.ResetTrigger("Close");
+            doorAnim.SetTrigger("Open");
+        }
+        if (toggle == false)
+        {
+            doorAnim.ResetTrigger("Open");
+            doorAnim.SetTrigger("Close");
+        }
+        intText.SetActive(false);
+        interactable = false;
+    }
+    IEnumerator isLockedText(){
+        yield return new WaitForSeconds(2.0f);
+        lockedText.SetActive(false);
     }
 }
