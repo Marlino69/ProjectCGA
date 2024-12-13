@@ -27,7 +27,7 @@ public class BoomDoorJumpscare : MonoBehaviour
                     doorAnim.ResetTrigger("Open");
                     doorAnim.SetTrigger("Boom");
                 }
-                // scareSound.Play();
+                scareSound.Play();
                 collision.enabled = false;
             }
 

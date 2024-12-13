@@ -16,7 +16,7 @@ public class DollRotate : MonoBehaviour
             if (valve.activeInHierarchy == false)
             {
                 dollAnim.SetTrigger("Rotate");
-                // scareSound.Play();
+                scareSound.Play();
                 collision.enabled = false;
             }
 
